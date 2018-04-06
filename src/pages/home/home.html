@@ -1,18 +1,253 @@
+<!--
+  Generated template for the HomePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
 <ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Home</ion-title>
+
+  <ion-navbar hideBackButton="true" color="primary">
+      <button ion-button icon-start menuToggle>
+          <ion-icon name="menu"></ion-icon>
+      </button>
+    <ion-title>หน้าหลัก</ion-title>
+    <ion-buttons end>
+        <button ion-button (click)="notificationPage()">
+            <ion-icon name="md-globe" style="font-size: 30px;"></ion-icon>
+            <ion-badge *ngIf="notiNumber > 0 " color="danger" style="margin-top: -10px; margin-left: -10px;">{{notiNumber}}</ion-badge>
+        </button>
+      </ion-buttons>
+    
   </ion-navbar>
+
 </ion-header>
 
-<ion-content padding>
-  <h3>Ionic Menu Starter</h3>
 
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
+<ion-content id="home-page">
 
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+    <ion-refresher (ionRefresh)="doRefresh($event)" (ionPull)="doPulling($event)">
+        <ion-refresher-content
+            pullingText="Pull to refresh..."
+            refreshingText="Refreshing...">
+        </ion-refresher-content>
+    </ion-refresher>
+    
+    <div class="header-div">
+    <ion-row>
+        <ion-col col-6>
+            <div>
+              <ion-icon name="ios-contact-outline" class="icon-top"></ion-icon>
+              <div class="text-top">
+                <h2 class="top-h2-1">{{profileData.uFname}}</h2>
+                <p class="top-p-1">{{profileData.uLname}}</p>
+              </div>
+            </div>
+        </ion-col>
+        <ion-col col-3>
+            <div>
+              <ion-icon name="ios-cash-outline" class="icon-top"></ion-icon>
+              <div class="text-top">
+                <h2 class="top-h2">{{profileData.cash}}</h2>
+                <p class="top-p">บาท</p>
+              </div>
+            </div>
+        </ion-col>
+        <ion-col col-3>
+            <div>
+              <ion-icon name="ios-star-outline" class="icon-top"></ion-icon>
+              <div class="text-top">
+                <h2 class="top-h2">{{profileData.uPoint}}</h2>
+                <p class="top-p">คะแนน</p>
+              </div>
+            </div>
+        </ion-col>
+      </ion-row>
+    </div>
+
+    
+        <ion-item-group>
+          <ion-item-divider color="light">
+                <ion-icon name="ios-book" class="icon-head color-b"></ion-icon>
+                <h2 class="text-head">รายการซักผ้า</h2>
+          </ion-item-divider>
+          <ion-item *ngIf="wahingListItem.length != 0" no-lines>
+              <ion-slides pager>
+                  <ion-slide style="width: 100%" *ngFor="let w of wahingListItem" >
+                            <div>
+                                <ion-row>
+                                    <ion-col col-3>
+                                        <div>
+                                            <ion-icon name="ios-pricetag-outline" class="text-list-1 color-b"></ion-icon>
+                                            <h2 class="text-list-1">{{w.name}}</h2>
+                                        </div>
+                                    </ion-col>
+                                    <ion-col col-6>
+                                        <div>
+                                            <ion-icon name="ios-pin-outline" class="text-list-1 color-b"></ion-icon>
+                                            <h2 class="text-list-1">{{w.dormName}}</h2>
+                                        </div>
+                                    </ion-col>
+                                    <ion-col col-2>
+                                        <div>
+                                            <ion-icon name="ios-cash-outline" class="text-list-1 color-b"></ion-icon>
+                                            <h2 class="text-list-1">{{w.price}}</h2>
+                                        </div>
+                                    </ion-col>
+                                </ion-row>
+                            </div>
+                            <br>
+                            <div class="center">
+                                      <p>เหลือเวลาอีก</p>
+                                      <h1 class="text-time">{{w.timeLeft}}</h1>
+                                      <p>นาที</p>      
+                            </div>
+                    </ion-slide>
+                </ion-slides>
+          </ion-item>
+          <ion-item style="width: 100%" *ngIf="wahingListItem.length == 0" no-lines>
+            <div style="color: #00B0FF;">ไม่พบรายการซักผ้า</div>
+          </ion-item>
+        </ion-item-group>
+        
+      <!-- </ion-content> -->
+
+      <!-- รายการจอง -->
+
+      <ion-item-group>
+        <ion-item-divider color="light">
+          <ion-icon name="logo-buffer" class="icon-head color-b"></ion-icon>
+          <h2 class="text-head">รายการจองเครื่องซักผ้า</h2>
+        </ion-item-divider>
+        <!-- list 1 -->
+        <ion-item *ngFor="let q of queueListItem">
+          <div item-start>
+              <img src="assets/imgs/booking.png" class="img" alt="">
+          </div>
+          <!-- <h2>{{q.washingName}} {{q.dormName}}</h2> -->
+          <!-- <ion-note >เวลาจอง {{q.timeStart}} น.</ion-note> <br>
+          <ion-note >ถึงเวลา {{q.timeEnd}} น.</ion-note> -->
+          <ion-grid>
+              <ion-row>
+                  <ion-col col-3>
+                      <h2>{{q.washingName}}</h2>
+                  </ion-col>
+                  <ion-col>
+                    <div><h2>{{q.dormName}}</h2></div>
+                  </ion-col>
+                </ion-row>
+              <ion-row>
+                  <ion-col col-3>
+                    <div>เวลาจอง</div>
+                  </ion-col>
+                  <ion-col>
+                    <div><ion-note >{{q.timeStart}} น.</ion-note></div>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col col-3>
+                      <div>ถึงเวลา</div>
+                    </ion-col>
+                    <ion-col>
+                      <div><ion-note >{{q.timeEnd}} น.</ion-note></div>
+                    </ion-col>
+                  </ion-row>
+          </ion-grid>
+        </ion-item>
+        <ion-item style="width: 100%" *ngIf="queueListItem.length == 0">
+            <div style="color: #00B0FF;">ไม่พบรายการจองเครื่องซักผ้า</div>
+        </ion-item>
+        
+      </ion-item-group>
+
+      <!-- เครื่องอยู่ใกล้ -->
+
+      <ion-item-group>
+          <ion-item-divider color="light">
+            <ion-icon name="ios-pin" class="icon-head color-b"></ion-icon>
+            <h2 class="text-head">เครื่องซักผ้าที่อยู่ใกล้</h2>
+          </ion-item-divider>
+          <!-- dorm1 -->
+          <p class="dorm" *ngIf="washingMachineRef_1$">{{(dormRef_1$ | async)?.name}}</p>
+          <div *ngIf="dorm2_id != ''">
+          <ion-item *ngFor="let item of washingMachineRef_1$ | async" (click)="openMenu(item.name, 1, item.washingkey)">
+            <div item-start>
+               <img src="assets/imgs/wm2.png" class="img" alt="" *ngIf="item.washingStatus == 'free' ">
+               <img src="assets/imgs/wm1.png" class="img" alt="" *ngIf="item.washingStatus == 'washing' ">
+            </div>
+            <h2>{{item.name}}</h2>
+            <p>ราคา {{item.price}} บาท</p>
+            <ion-note item-end>เหลืออีก {{item.timeLeft}} นาที</ion-note>
+          </ion-item>
+        </div>
+          <!-- dorm2 -->
+          <p class="dorm" *ngIf="washingMachineRef_2$">{{(dormRef_2$ | async)?.name}}</p>
+          <div *ngIf="dorm2_id != ''">
+          <ion-item *ngFor="let item of washingMachineRef_2$ | async" (click)="openMenu(item.name, 2, item.washingkey)">
+            <div item-start>
+                <img src="assets/imgs/wm2.png" class="img" alt="" *ngIf="item.washingStatus == 'free' ">
+                <img src="assets/imgs/wm1.png" class="img" alt="" *ngIf="item.washingStatus == 'washing' ">
+            </div>
+            <h2>{{item.name}}</h2>
+            <p>ราคา {{item.price}} บาท</p>
+            <ion-note item-end>เหลืออีก {{item.timeLeft}} นาที</ion-note>
+          </ion-item>
+          </div>
+          <!-- dorm3 -->
+          <p class="dorm" *ngIf="washingMachineRef_3$">{{(dormRef_3$ | async)?.name}}</p>
+          <div *ngIf="dorm3_id != ''">
+            <ion-item *ngFor="let item of washingMachineRef_3$ | async" (click)="openMenu(item.name, 3, item.washingkey)">
+              <div item-start>
+                 <img src="assets/imgs/wm2.png" class="img" alt="" *ngIf="item.washingStatus == 'free' ">
+                <img src="assets/imgs/wm1.png" class="img" alt="" *ngIf="item.washingStatus == 'washing' ">
+              </div>
+              <h2>{{item.name}}</h2>
+              <p>ราคา {{item.price}} บาท</p>
+              <ion-note item-end>เหลืออีก {{item.timeLeft}} นาที</ion-note>
+            </ion-item>
+            </div>
+          <!-- dorm4 -->
+          <p class="dorm" *ngIf="washingMachineRef_4$">{{(dormRef_4$ | async)?.name}}</p>
+          <div *ngIf="dorm4_id != ''">
+          <ion-item *ngFor="let item of washingMachineRef_4$ | async" (click)="openMenu(item.name, 4, item.washingkey)">
+            <div item-start>
+               <img src="assets/imgs/wm2.png" class="img" alt="" *ngIf="item.washingStatus == 'free' ">
+                <img src="assets/imgs/wm1.png" class="img" alt="" *ngIf="item.washingStatus == 'washing' ">
+            </div>
+            <h2>{{item.name}}</h2>
+            <p>ราคา {{item.price}} บาท</p>
+            <ion-note item-end>เหลืออีก {{item.timeLeft}} นาที</ion-note>
+          </ion-item>
+          <ion-item no-lines style="width: 100%" *ngIf="!washingMachineRef_1$" class="center" >
+              <ion-spinner name="bubbles" color="dark"></ion-spinner>
+              <div style="color: #222;">กำลังค้นหาเครื่องซักผ้า</div>
+              <div style="color: #222;">กรุณารอสักครู่</div>
+          </ion-item>
+          </div>
+        </ion-item-group>
+      
+
+        <!-- <div style="height:60px;"></div> -->
+        <!-- <div class="footer" (click)="scanBarcode()">
+                <ion-icon name="md-camera" class="footer-icon"></ion-icon>
+                <h2 class="footer-text">สแกน QR Code เพื่อซักผ้า</h2>
+        </div> -->
+        
+    
 </ion-content>
+
+<ion-footer (click)="scanBarcode()" >
+    <ion-toolbar color="primary">
+      <!-- <ion-title>
+      <ion-icon name="md-camera" class="footer-icon"></ion-icon>
+      <p class="footer-text">สแกน QR Code เพื่อซักผ้า</p>
+    </ion-title> -->
+    <div style="text-align: center;">
+        <ion-buttons >
+          <button ion-button icon-left>
+            <ion-icon name="camera" style="padding-top: 5px; font-size:30px;"></ion-icon>
+            <h4>สแกน QR Code เพื่อซักผ้า</h4>
+          </button>
+        </ion-buttons>
+      </div>
+    </ion-toolbar>
+  </ion-footer>

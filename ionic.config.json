@@ -1,5 +1,8 @@
 {
   "name": "WashEasyApp",
-  "app_id": "",
-  "type": "ionic-angular"
+  "app_id": "17a2996f",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
 }

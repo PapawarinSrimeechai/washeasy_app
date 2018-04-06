@@ -1,16 +1,30 @@
 <ion-menu [content]="content">
-  <ion-header>
+  <!-- <ion-header>
     <ion-toolbar>
-      <ion-title>Menu</ion-title>
+      <ion-title>เมนู</ion-title>
     </ion-toolbar>
-  </ion-header>
+  </ion-header> -->
 
-  <ion-content>
-    <ion-list>
-      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-        {{p.title}}
-      </button>
+  <ion-content id="menu" class="bg-img">
+
+    <img src="assets/imgs/w-logo.png" class="img-logo">
+    <h1 class="h1-text">Wash's Easy</h1>
+
+    <ion-list no-lines>
+        <ion-item menuClose *ngFor="let p of pages" (click)="openPage(p)" class="bg-color">
+          <ion-icon class="icon-start" name="{{p.icon}}" item-start></ion-icon>
+          <h2 class="h2-text">{{p.title}}</h2>
+          <ion-icon class="icon-end" name="ios-arrow-forward" item-end></ion-icon>
+        </ion-item>
     </ion-list>
+
+    <p menuClose class="logout" (click)="showAlert()">
+        ออกจากระบบ
+        <ion-icon class="" name="md-log-out" item-end></ion-icon>
+        <!-- <ion-icon class="icon ion-ios-arrow-forward"></ion-icon> -->
+    </p>
+    
+
   </ion-content>
 
 </ion-menu>

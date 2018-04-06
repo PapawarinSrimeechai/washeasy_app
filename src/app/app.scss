@@ -14,3 +14,53 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+
+app-page {
+    #menu {
+        background-color: #ECEFF1;
+        
+
+        .img-logo {
+            background-color: transparent;
+            width: 120px;
+            height: 120px;
+            display: block;
+            margin: 0 auto;
+            margin-top: 15%;
+        }
+
+        .h1-text {
+            font-size: 25px;
+            text-align: center;
+            margin-bottom: 10%;
+            color: #686868;
+        }
+
+        .h2-text {
+            font-size: 16px;
+            color: #686868;
+        }
+
+        .icon-start {
+            color: #686868;
+        }
+
+        .icon-end {
+            color: #C2C5C6;
+        }
+
+        .bg-color {
+            background-color: transparent;
+        }
+        .logout {
+            color: #939393;
+            font-size: 14px;
+            position:absolute;
+            bottom:0;
+            right:15px;
+            
+        }
+
+    }
+}

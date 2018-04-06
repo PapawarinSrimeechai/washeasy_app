@@ -3,32 +3,60 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
+import { TopUpPage } from '../pages/top-up/top-up';
+import { HistoryPage } from '../pages/history/history';
+import { ProfileEditPage } from '../pages/profile-edit/profile-edit';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
+import { AngularFireModule } from 'angularfire2';
+import { FIREBASE_CONFIG } from './app.firebase.config';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireDatabaseModule } from "angularfire2/database";
+
+import { BarcodeScanner } from "@ionic-native/barcode-scanner";
+import { LocalNotifications } from '@ionic-native/local-notifications';
+import { MessageServiceProvider } from '../providers/message-service/message-service';
+import { Geolocation } from '@ionic-native/geolocation';
+import { FCM } from '@ionic-native/fcm';
+import { NativeStorage } from '@ionic-native/native-storage';
+
+
+import { HttpModule } from '@angular/http';
+
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    ListPage
+    TopUpPage,
+    ProfileEditPage,
+    HistoryPage,
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    AngularFireModule.initializeApp(FIREBASE_CONFIG),
+    AngularFireAuthModule,
+    AngularFireDatabaseModule,
+    HttpModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    ListPage
+    TopUpPage,
+    ProfileEditPage,
+    HistoryPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    BarcodeScanner,
+    LocalNotifications,
+    MessageServiceProvider,
+    Geolocation,
+    FCM, 
+    NativeStorage,
   ]
 })
 export class AppModule {}
