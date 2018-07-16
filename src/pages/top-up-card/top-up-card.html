@@ -1,0 +1,22 @@
+<!--
+  Generated template for the TopUpCardPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>{{'title'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding id="topupcard">
+    <ion-item>
+        <ion-label floating>{{'code'|translate}}</ion-label>
+        <ion-input type="text" [(ngModel)]="topUpID"></ion-input>
+      </ion-item>
+
+      <button ion-button round class="button-topup"  (click)="topUp(topUpID)">{{'topup'|translate}}</button>
+
+</ion-content>

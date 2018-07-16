@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "27567964939",
+    "firebase_url": "https://washeasytha.firebaseio.com",
+    "project_id": "washeasytha",
+    "storage_bucket": "washeasytha.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27567964939:android:02a31a37734e2f41",
+        "android_client_info": {
+          "package_name": "com.washeasy.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27567964939-7rd3aqcae7pjv6m7s7u0p6ivgm1v7piu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoygkSxO0qN3ylQlijwxJF4J_ZHjRjKSg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

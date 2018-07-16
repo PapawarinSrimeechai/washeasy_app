@@ -1,0 +1,37 @@
+page-notification {
+
+    #notification {
+
+        .trxt-body {
+            color: #373737;
+        }
+
+        .text-title {
+            color: #373737;
+            font-weight: bold;
+            margin-top : 0px;
+        }
+        .img {
+            width: 40px;
+            height: 40px;
+        }
+        .icon-top {
+            font-size:40px; 
+            display: inline-block;
+            color: rgb(78, 78, 78);
+        }
+        .space {
+            height: 10px; 
+            background-color: #ECEFF1;
+            border-bottom: 1px solid #D6DADB;
+            border-top: 1px solid #D6DADB;
+        }
+
+        .newItem {
+            background-color: #ECEFF1;
+            border-top: 1px solid #D6DADB;
+        }
+
+    }
+
+}

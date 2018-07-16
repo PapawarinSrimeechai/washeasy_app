@@ -1,0 +1,50 @@
+page-top-up-machine2 {
+    #topupMachine {
+        .button-red {
+            background-color: #f53d3d;
+            display: block;
+            margin: 0 auto;
+            margin-top: 10%;
+            font-size: 25px;
+            width: 70%;
+            height: 40px;
+        }
+
+        .button-green {
+            background-color: #32db64;
+            display: block;
+            margin: 0 auto;
+            margin-top: 10%;
+            font-size: 25px;
+            width: 70%;
+            height: 40px;
+        }
+
+        .center {
+            text-align: center;
+            border-bottom: 1px solid #D6DADB;
+        }
+    }
+    
+    div{
+        position: relative;
+        text-align: center;
+      }
+    
+      .card-title {
+        position: absolute;
+        top: 26%;
+        font-size: 8.0em;
+        width: 100%;
+        font-weight: bold;
+        color: #06b2fd;
+      }
+    
+      .card-subtitle {
+        font-size: 1.0em;
+        position: absolute;
+        top: 65%;
+        width: 100%;
+        color: #06b2fd;
+      }
+}

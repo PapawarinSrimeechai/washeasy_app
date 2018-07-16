@@ -12,7 +12,8 @@ import { FCM } from '@ionic-native/fcm';
 import { Geolocation } from '@ionic-native/geolocation';
 import { AngularFireDatabase, FirebaseObjectObservable, FirebaseListObservable} from "angularfire2/database";
 import { MessageServiceProvider } from '../providers/message-service/message-service';
-
+import { TranslateService } from '@ngx-translate/core';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-page',
@@ -36,9 +37,9 @@ export class MyApp {
   constructor(private afAuth: AngularFireAuth, private loadingCtrl: LoadingController, private alertCtrl: AlertController,
     public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private nativeStorage: NativeStorage,
     private fcm: FCM ,private geolocation: Geolocation, private afDatabase: AngularFireDatabase,
-    private msgService: MessageServiceProvider) {
-    
-
+    private msgService: MessageServiceProvider,private translate: TranslateService,private storage: Storage) {
+         
+      
         this.afAuth.authState.take(1).subscribe(FBdata => {
           if(FBdata && FBdata.email && FBdata.uid) {
             try{
@@ -57,14 +58,12 @@ export class MyApp {
             }catch(e){
               this.nav.setRoot('LoginPage');
             }
-             //this.nav.setRoot('HomePage');
+            //this.nav.setRoot('HomePage');
           }else{
             this.nav.setRoot('LoginPage');
           } 
         });
         
-
-
       try {
         this.geolocation.getCurrentPosition().then((resp) => {
           console.log('lat: '+resp.coords.latitude);
@@ -80,10 +79,10 @@ export class MyApp {
 
     //used for an example of ngFor and navigation
     this.pages = [
-      { title: 'หน้าหลัก', icon: 'ios-home' , component: HomePage },
-      { title: 'เติมเงิน',  icon: 'ios-card' , component: TopUpPage },
-      { title: 'ประวัติ', icon: 'ios-list-box' , component: HistoryPage },
-      { title: 'ข้อมูลส่วนตัว',  icon: 'ios-contact' , component: ProfileEditPage },
+      { title: 'Home', icon: 'ios-home' , component: HomePage },
+      { title: 'Top Up',  icon: 'ios-card' , component: TopUpPage},
+      { title: 'History', icon: 'ios-list-box' , component: HistoryPage },
+      { title: 'Profile',  icon: 'ios-contact' , component: ProfileEditPage },
      //{ title: 'List', component: ListPage }
     ];
 
@@ -109,11 +108,19 @@ export class MyApp {
   openPage(page) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
-    if(page.title == 'หน้าหลัก'){
+    if(page.title == 'Home'){
+      console.log(this.translate);
       //this.presentLoadingCircles();
       this.nav.setRoot(page.component);
     }else{
-      this.nav.push(page.component);
+      this.storage.get('lang').then((data)=>{
+        this.nav.push(page.component,
+          {
+          Clang: data,
+        });
+      //  console.log(data);
+      });
+      
     }
     
     // this.nav.setRoot(page);
@@ -126,7 +133,7 @@ export class MyApp {
   presentLoadingCircles() {
     let loading = this.loadingCtrl.create({
       spinner: 'circles',
-      content: 'กรุณารอสักครู่',
+      content: 'Please wait',
       duration: 2000
     });
 
@@ -134,27 +141,54 @@ export class MyApp {
   }
 
   showAlert() {
-    let alert = this.alertCtrl.create({
-      title: 'ต้องการออกจากระบบหรือไม่?',
-      //subTitle: '_subTitle',
-      buttons:[
-        {
-          text: 'ตกลง',
-          handler: () => {
-            this.presentLoadingCircles();
-            console.log('OK clicked');
-            this.logout();
-          }
-        },
-        {
-          text: 'ยกเลิก',
-          handler: () => {
-            console.log('cancel clicked');
-          }
-        }
-      ]
+    this.storage.get('lang').then((data)=>{
+      if(data == 'en'){
+        let alert = this.alertCtrl.create({
+          title: 'Are you sure you want to log out?',
+          //subTitle: '_subTitle',
+          buttons:[
+            {
+              text: 'OK',
+              handler: () => {
+                this.presentLoadingCircles();
+                console.log('OK clicked');
+                this.logout();
+              }
+            },
+            {
+              text: 'Cancel',
+              handler: () => {
+                console.log('cancel clicked');
+              }
+            }
+          ]
+        });
+        alert.present();
+      }else if(data=='th'){
+        let alert = this.alertCtrl.create({
+          title: 'ต้องการออกจากระบบ ?',
+          //subTitle: '_subTitle',
+          buttons:[
+            {
+              text: 'ตกลง',
+              handler: () => {
+                this.presentLoadingCircles();
+                console.log('OK clicked');
+                this.logout();
+              }
+            },
+            {
+              text: 'ยกเลิก',
+              handler: () => {
+                console.log('cancel clicked');
+              }
+            }
+          ]
+        });
+        alert.present();
+      }
     });
-    alert.present();
+ 
   }
 
 

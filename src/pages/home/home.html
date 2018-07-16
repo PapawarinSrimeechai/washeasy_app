@@ -10,7 +10,7 @@
       <button ion-button icon-start menuToggle>
           <ion-icon name="menu"></ion-icon>
       </button>
-    <ion-title>หน้าหลัก</ion-title>
+    <ion-title>Home</ion-title>
     <ion-buttons end>
         <button ion-button (click)="notificationPage()">
             <ion-icon name="md-globe" style="font-size: 30px;"></ion-icon>
@@ -48,7 +48,7 @@
               <ion-icon name="ios-cash-outline" class="icon-top"></ion-icon>
               <div class="text-top">
                 <h2 class="top-h2">{{profileData.cash}}</h2>
-                <p class="top-p">บาท</p>
+                <p class="top-p">{{'THB'|translate}}</p>
               </div>
             </div>
         </ion-col>
@@ -57,7 +57,7 @@
               <ion-icon name="ios-star-outline" class="icon-top"></ion-icon>
               <div class="text-top">
                 <h2 class="top-h2">{{profileData.uPoint}}</h2>
-                <p class="top-p">คะแนน</p>
+                <p class="top-p">{{'points'|translate}}</p>
               </div>
             </div>
         </ion-col>
@@ -68,7 +68,7 @@
         <ion-item-group>
           <ion-item-divider color="light">
                 <ion-icon name="ios-book" class="icon-head color-b"></ion-icon>
-                <h2 class="text-head">รายการซักผ้า</h2>
+                <h2 class="text-head">{{'Witem'|translate}}</h2>
           </ion-item-divider>
           <ion-item *ngIf="wahingListItem.length != 0" no-lines>
               <ion-slides pager>
@@ -90,22 +90,22 @@
                                     <ion-col col-2>
                                         <div>
                                             <ion-icon name="ios-cash-outline" class="text-list-1 color-b"></ion-icon>
-                                            <h2 class="text-list-1">{{w.price}}</h2>
+                                            <h2 class="text-list-1">{{w.priceTotal}}</h2>
                                         </div>
                                     </ion-col>
                                 </ion-row>
                             </div>
                             <br>
                             <div class="center">
-                                      <p>เหลือเวลาอีก</p>
+                                      <p>{{'Ltime'|translate}}</p>
                                       <h1 class="text-time">{{w.timeLeft}}</h1>
-                                      <p>นาที</p>      
+                                      <p>{{'min'|translate}}</p>      
                             </div>
                     </ion-slide>
                 </ion-slides>
           </ion-item>
           <ion-item style="width: 100%" *ngIf="wahingListItem.length == 0" no-lines>
-            <div style="color: #00B0FF;">ไม่พบรายการซักผ้า</div>
+            <div style="color: #00B0FF;">{{'TextWitem'|translate}}</div>
           </ion-item>
         </ion-item-group>
         
@@ -116,7 +116,7 @@
       <ion-item-group>
         <ion-item-divider color="light">
           <ion-icon name="logo-buffer" class="icon-head color-b"></ion-icon>
-          <h2 class="text-head">รายการจองเครื่องซักผ้า</h2>
+          <h2 class="text-head">{{'Wbook'|translate}}</h2>
         </ion-item-divider>
         <!-- list 1 -->
         <ion-item *ngFor="let q of queueListItem">
@@ -137,24 +137,24 @@
                 </ion-row>
               <ion-row>
                   <ion-col col-3>
-                    <div>เวลาจอง</div>
+                    <div>{{'Book'|translate}} </div>
                   </ion-col>
                   <ion-col>
-                    <div><ion-note >{{q.timeStart}} น.</ion-note></div>
+                    <div><ion-note >{{q.timeStart}} {{'n'|translate}} </ion-note></div>
                   </ion-col>
                 </ion-row>
                 <ion-row>
                     <ion-col col-3>
-                      <div>ถึงเวลา</div>
+                       <div>{{'toTime'|translate}} </div>
                     </ion-col>
                     <ion-col>
-                      <div><ion-note >{{q.timeEnd}} น.</ion-note></div>
+                      <div><ion-note >{{q.timeEnd}} {{'n'|translate}}</ion-note></div>
                     </ion-col>
                   </ion-row>
           </ion-grid>
         </ion-item>
         <ion-item style="width: 100%" *ngIf="queueListItem.length == 0">
-            <div style="color: #00B0FF;">ไม่พบรายการจองเครื่องซักผ้า</div>
+            <div style="color: #00B0FF;">{{'TextWbook'|translate}}</div>
         </ion-item>
         
       </ion-item-group>
@@ -164,7 +164,7 @@
       <ion-item-group>
           <ion-item-divider color="light">
             <ion-icon name="ios-pin" class="icon-head color-b"></ion-icon>
-            <h2 class="text-head">เครื่องซักผ้าที่อยู่ใกล้</h2>
+            <h2 class="text-head">{{'NearW'|translate}}</h2>
           </ion-item-divider>
           <!-- dorm1 -->
           <p class="dorm" *ngIf="washingMachineRef_1$">{{(dormRef_1$ | async)?.name}}</p>
@@ -175,8 +175,8 @@
                <img src="assets/imgs/wm1.png" class="img" alt="" *ngIf="item.washingStatus == 'washing' ">
             </div>
             <h2>{{item.name}}</h2>
-            <p>ราคา {{item.price}} บาท</p>
-            <ion-note item-end>เหลืออีก {{item.timeLeft}} นาที</ion-note>
+            <p>{{'price'|translate}} {{item.price}} {{'thb'|translate}} </p>
+            <ion-note item-end>{{'Ltime'|translate}} {{item.timeLeft}} {{'min'|translate}} </ion-note>
           </ion-item>
         </div>
           <!-- dorm2 -->
@@ -188,8 +188,8 @@
                 <img src="assets/imgs/wm1.png" class="img" alt="" *ngIf="item.washingStatus == 'washing' ">
             </div>
             <h2>{{item.name}}</h2>
-            <p>ราคา {{item.price}} บาท</p>
-            <ion-note item-end>เหลืออีก {{item.timeLeft}} นาที</ion-note>
+            <p>{{'price'|translate}} {{item.price}} {{'thb'|translate}}</p>
+            <ion-note item-end>{{'Ltime'|translate}} {{item.timeLeft}} {{'min'|translate}}</ion-note>
           </ion-item>
           </div>
           <!-- dorm3 -->
@@ -201,8 +201,8 @@
                 <img src="assets/imgs/wm1.png" class="img" alt="" *ngIf="item.washingStatus == 'washing' ">
               </div>
               <h2>{{item.name}}</h2>
-              <p>ราคา {{item.price}} บาท</p>
-              <ion-note item-end>เหลืออีก {{item.timeLeft}} นาที</ion-note>
+              <p>{{'price'|translate}} {{item.price}} {{'thb'|translate}}</p>
+              <ion-note item-end>{{'Ltime'|translate}} {{item.timeLeft}} {{'min'|translate}}</ion-note>
             </ion-item>
             </div>
           <!-- dorm4 -->
@@ -214,13 +214,13 @@
                 <img src="assets/imgs/wm1.png" class="img" alt="" *ngIf="item.washingStatus == 'washing' ">
             </div>
             <h2>{{item.name}}</h2>
-            <p>ราคา {{item.price}} บาท</p>
-            <ion-note item-end>เหลืออีก {{item.timeLeft}} นาที</ion-note>
+            <p>{{'price'|translate}} {{item.price}} {{'thb'|translate}}</p>
+            <ion-note item-end>{{'Ltime'|translate}} {{item.timeLeft}} {{'min'|translate}}</ion-note>
           </ion-item>
           <ion-item no-lines style="width: 100%" *ngIf="!washingMachineRef_1$" class="center" >
               <ion-spinner name="bubbles" color="dark"></ion-spinner>
-              <div style="color: #222;">กำลังค้นหาเครื่องซักผ้า</div>
-              <div style="color: #222;">กรุณารอสักครู่</div>
+              <div style="color: #222;">{{'TextWsearch'|translate}}</div>
+              <div style="color: #222;">{{'TextWait'|translate}}</div>
           </ion-item>
           </div>
         </ion-item-group>
@@ -245,7 +245,7 @@
         <ion-buttons >
           <button ion-button icon-left>
             <ion-icon name="camera" style="padding-top: 5px; font-size:30px;"></ion-icon>
-            <h4>สแกน QR Code เพื่อซักผ้า</h4>
+            <h4>{{'TextWsacn'|translate}}</h4>
           </button>
         </ion-buttons>
       </div>

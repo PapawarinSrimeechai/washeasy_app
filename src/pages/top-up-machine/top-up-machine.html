@@ -1,0 +1,58 @@
+<!--
+  Generated template for the TopUpMachinePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar color="primary">
+     <ion-title>{{'title'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding id="topupMachine">
+
+  <!-- <ion-list radio-group [(ngModel)]="price">
+
+      <ion-list-header>
+        เลือกราคา
+      </ion-list-header>
+    
+      <ion-item>
+        <ion-label>20 บาท</ion-label>
+        <ion-radio value="20"></ion-radio>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label>60 บาท</ion-label>
+        <ion-radio value="60"></ion-radio>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label>80 บาท</ion-label>
+        <ion-radio value="80"></ion-radio>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label>100 บาท</ion-label>
+        <ion-radio value="100"></ion-radio>
+      </ion-item>
+    
+    </ion-list> -->
+    <div><img src="assets/imgs/howto1.png"/></div>
+    
+</ion-content>
+<ion-footer (click)="scanBarcode()" >
+    <ion-toolbar color="primary">
+
+    <div style="text-align: center;">
+        <ion-buttons >
+          <button ion-button icon-left>
+            <ion-icon name="camera" style="padding-top: 5px; font-size:30px;"></ion-icon>
+             <h4>{{'scan'|translate}}</h4>
+          </button>
+        </ion-buttons>
+      </div>
+    </ion-toolbar>
+  </ion-footer>

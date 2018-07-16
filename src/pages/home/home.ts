@@ -18,6 +18,8 @@ import { Platform } from 'ionic-angular/platform/platform';
 import { FCM } from '@ionic-native/fcm';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { Title } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the HomePage page.
@@ -42,6 +44,11 @@ export class HomePage {
 
   washingRef2$:  FirebaseObjectObservable<WashingMachine>;
   washingRef2 = {} as WashingMachine;
+
+  onWashingTimeLeft$:  FirebaseObjectObservable<WashingMachine>;
+  onWashingTimeLeft = {} as WashingMachine;
+  timeLeft = '00:00:00' as string;
+  onWashingStatus = 'free' as string;
 
   //timeInSeconds = 3000 as number;
   //timeInSeconds = 120 as number;
@@ -85,8 +92,48 @@ export class HomePage {
     private menu: MenuController, private app: App, private barcode: BarcodeScanner, private actionSheetCtrl: ActionSheetController,
     private alertCtrl: AlertController, private geolocation: Geolocation, private loadingCtrl: LoadingController,
     private localNotifications: LocalNotifications, private msgService: MessageServiceProvider,
-    public navCtrl: NavController, public navParams: NavParams, private platform: Platform, private fcm: FCM, private nativeStorage: NativeStorage) {
-
+    public navCtrl: NavController, public navParams: NavParams, private platform: Platform, private fcm: FCM, private nativeStorage: NativeStorage
+    ,private translate: TranslateService,private storage: Storage) {
+      this.storage.get('lang').then((data)=>{
+        this.translate.setDefaultLang(data);
+        this.translate.use(data);
+      });
+      this.translate.setTranslation('en', {
+        Witem: 'Washer items',
+        points: 'points',
+        Ltime: 'Left time',
+        min: 'minutes',
+        TextWitem: 'Washer items not found',
+        Wbook: 'Washer booking',
+        Book: 'Booking',
+        toTime: 'to',
+        n: '',
+        TextWbook: 'Washer booking not found',
+        NearW:'Nearest washing machine',
+        price:'price',
+        thb:'THB',
+        TextWsearch:'searching washing machine',
+        TextWait:'Please wait',
+        TextWsacn:'Scan QR Code for washing',
+      });
+      this.translate.setTranslation('th', {
+        Witem: 'รายการซักผ้า',
+        points: 'แต้ม',
+        Ltime: 'เหลือเวลาอีก',
+        min: 'นาที',
+        TextWitem: 'ไม่พบรายการซักผ้า',
+        Wbook: 'รายการจองเครื่องซักผ้า',
+        Book: 'เวลาจอง',
+        toTime: 'ถึงเวลา',
+        n: 'น.',
+        TextWbook: 'ไม่พบรายการจองเครื่องซักผ้า',
+        NearW:'เครื่องซักผ้าที่อยู่ใกล้',
+        price:'ราคา',
+        thb:'บาท',
+        TextWsearch:'กำลังค้นหาเครื่องซักผ้า',
+        TextWait:'กรุณารอสักครู่',
+        TextWsacn:'สแกน QR Code เพื่อซักผ้า',
+       });
       // Pointing machinelistRef$ at firebase -> 'washingMachine' node
       // washing machine list
       // this.washingMachineRef$ = this.afDatabase.list('washingMachine');
@@ -179,7 +226,7 @@ export class HomePage {
           }
           for(let i=0; i<resp.washing.length; i++){
             
-            console.log(resp.washing[i].idWashing)
+            console.log(resp.washing[i].idWashing_Machine);
             
             this.afDatabase.object(`washingMachine/${resp.washing[i].idDorm}/machine/${resp.washing[i].idWashing_Machine}`)
             .subscribe( data => {
@@ -212,7 +259,7 @@ export class HomePage {
         for(let i=0; i<resp.queue.length; i++){
           
           console.log(resp.queue[i].idWashing_Machine);
-          this.queueListItem[i] = resp.queue[i]
+          this.queueListItem[i] = resp.queue[i];
           // this.afDatabase.object(`washingMachine/${resp.queue[i].idDorm}/machine/${resp.queue[i].idWashing_Machine}`)
           // .subscribe( data => {
           //   console.log(data);
@@ -292,25 +339,72 @@ export class HomePage {
   washingMachineRef_4
   scanBarcode() {
     try {
-      if (this.wahingListItem.length == 0) {
         this.barcode.scan().then((barcodeData) => {
-  
           console.log(barcodeData);
           var tmp = String(barcodeData.text);
           var washingId = tmp.split(',',2);
-  
-          if(washingId[0]!=undefined && washingId[1]!=undefined) {
-            //this.washingFn(washingId[0], washingId[1]);
-            this.showProgramRadio(washingId[0], washingId[1]);
+          var round = 0;
+          this.afAuth.authState.take(1).subscribe(data => {
+            if(data && data.email && data.uid) {
+            this.msgService.getWashingList({token: data.uid}).subscribe(resp=>{
+                for(let i=0; i<resp.washing.length; i++){
+            
+                  if(washingId[0]!=undefined && washingId[1]!=undefined && washingId[0]==resp.washing[i].idWashing_Machine) {
+                    round++;
+                  }
+                }
+                if(round==0){
+                  if(washingId[0]!=undefined && washingId[1]!=undefined) {
+                    this.showProgramRadio(washingId[0], washingId[1]);
+                  }
+                }else{
+                  this.storage.get('lang').then((data)=>{
+                    if(data=='en'){
+                      this.showAlertErr('Please try again','Washing machine is working');
+                    }else if(data=='th'){
+                      this.showAlertErr('ไม่สามารถทำรายการได้','เครื่องซักผ้ากำลังซัก');
+                    }
+                  });
+                }
+            });
           }
+        });
+  
+          // console.log(barcodeData);
+          // var tmp = String(barcodeData.text);
+          // var washingId = tmp.split(',',2);
+          // if(washingId[0]!=undefined && washingId[1]!=undefined) {
+          //   //this.washingFn(washingId[0], washingId[1]);
+          //   this.showProgramRadio(washingId[0], washingId[1]);
+          // }
         }, (err) => {
           // alert('เกิดข้อผิดพลาด');
           // this.washingFn("W4000200101", "D40002001");
-          this.showProgramRadio("W4000200101", "D40002001");
+          //this.showProgramRadio("W4000200102", "D40002001");
+          var round = 0;
+          this.afAuth.authState.take(1).subscribe(data => {
+            if(data && data.email && data.uid) {
+            this.msgService.getWashingList({token: data.uid}).subscribe(resp=>{
+                for(let i=0; i<resp.washing.length; i++){
+                  if("W4000200101"==resp.washing[i].idWashing_Machine) {
+                    round++;
+                  }
+                }
+                if(round==0){
+                    this.showProgramRadio("W4000200101", "D40002001");
+                }else{
+                  this.storage.get('lang').then((data)=>{
+                    if(data=='en'){
+                      this.showAlertErr('Please try again','Washing machine is working');
+                    }else if(data=='th'){
+                      this.showAlertErr('ไม่สามารถทำรายการได้','เครื่องซักผ้ากำลังซัก');
+                    }
+                  });
+                }
+            });
+          }
         });
-      } else {
-        this.showAlertErr('ไม่สามารถซักผ้าได้','เนื่องจากท่านมีรายการซักอยู่');
-      }
+        });
     } catch (error) {
       console.error('scanBarcode ERROR: '+error);
     }
@@ -319,76 +413,152 @@ export class HomePage {
   modeRadioOpen = true;
   showProgramRadio(_washingId, _dormId) {
     let alert = this.alertCtrl.create();
-    alert.setTitle('เลือกโหมดการซัก');
+    this.storage.get('lang').then((data)=>{
+      if(data=='en'){
+        alert.setTitle('Select the washing mode');
 
-    alert.addInput({
-      type: 'radio',
-      label: 'อัตโนมัติ',
-      value: '1',
-      checked: true
-    });
+        alert.addInput({
+          type: 'radio',
+          label: 'automatic',
+          value: '1',
+          checked: true
+        });
+    
+        alert.addInput({
+          type: 'radio',
+          label: 'blanket',
+          value: '2',
+        });
+    
+        alert.addInput({
+          type: 'radio',
+          label: 'delicates',
+          value: '3',
+        });
+    
+        alert.addButton({
+          text: 'next',
+          handler: data => {
+            this.modeRadioOpen = false;
+            console.log(data);
+            this.showlevelRadio(_washingId, _dormId, data);
+          }
+        });
+      }else if(data=='th'){
+        alert.setTitle('เลือกโหมดการซัก');
 
-    alert.addInput({
-      type: 'radio',
-      label: 'ผ้าห่ม',
-      value: '2',
-    });
-
-    alert.addInput({
-      type: 'radio',
-      label: 'ถนอมผ้า',
-      value: '3',
-    });
-
-    alert.addButton({
-      text: 'ตกลง',
-      handler: data => {
-        this.modeRadioOpen = false;
-        console.log(data);
-        this.showlevelRadio(_washingId, _dormId, data);
+        alert.addInput({
+          type: 'radio',
+          label: 'อัตโนมัติ',
+          value: '1',
+          checked: true
+        });
+    
+        alert.addInput({
+          type: 'radio',
+          label: 'ผ้าห่ม',
+          value: '2',
+        });
+    
+        alert.addInput({
+          type: 'radio',
+          label: 'ถนอมผ้า',
+          value: '3',
+        });
+    
+        alert.addButton({
+          text: 'ต่อไป',
+          handler: data => {
+            this.modeRadioOpen = false;
+            console.log(data);
+            this.showlevelRadio(_washingId, _dormId, data);
+          }
+        });
       }
     });
+   
     alert.present();
   }
 
   levelRadioOpen = true;
   showlevelRadio(_washingId, _dormId, _program) {
     let alert = this.alertCtrl.create();
-    alert.setTitle('เลือกระดับน้ำ');
+    this.storage.get('lang').then((data)=>{
+      if(data=='en'){
+        alert.setTitle('Water level');
 
-    alert.addInput({
-      type: 'radio',
-      label: 'สูง',
-      value: '4'
-    });
+        alert.addInput({
+          type: 'radio',
+          label: 'high',
+          value: '4'
+        });
+    
+        alert.addInput({
+          type: 'radio',
+          label: 'middle',
+          value: '3',
+          checked: true
+        });
+    
+        alert.addInput({
+          type: 'radio',
+          label: 'low',
+          value: '2',
+        });
+    
+        alert.addInput({
+          type: 'radio',
+          label: 'lowest',
+          value: '1',
+        });
+    
+        alert.addButton({
+          text: 'OK',
+          handler: data => {
+            this.levelRadioOpen = false;
+            console.log(data);
+            this.washingFn(_washingId, _dormId, _program, data);
+          }
+        });
+      }else if(data=='th'){
+        alert.setTitle('ระดับน้ำ');
 
-    alert.addInput({
-      type: 'radio',
-      label: 'กลาง',
-      value: '3',
-      checked: true
-    });
-
-    alert.addInput({
-      type: 'radio',
-      label: 'ต่ำ',
-      value: '2',
-    });
-
-    alert.addInput({
-      type: 'radio',
-      label: 'ต่ำสุด',
-      value: '1',
-    });
-
-    alert.addButton({
-      text: 'ตกลง',
-      handler: data => {
-        this.levelRadioOpen = false;
-        console.log(data);
-        this.washingFn(_washingId, _dormId, _program, data);
+        alert.addInput({
+          type: 'radio',
+          label: 'สูง',
+          value: '4'
+        });
+    
+        alert.addInput({
+          type: 'radio',
+          label: 'กลาง',
+          value: '3',
+          checked: true
+        });
+    
+        alert.addInput({
+          type: 'radio',
+          label: 'ต่ำ',
+          value: '2',
+        });
+    
+        alert.addInput({
+          type: 'radio',
+          label: 'ต่ำสุด',
+          value: '1',
+        });
+    
+        alert.addButton({
+          text: 'ตกลง',
+          handler: data => {
+            this.levelRadioOpen = false;
+            console.log(data);
+            this.washingFn(_washingId, _dormId, _program, data);
+          }
+        });
       }
     });
+   
     alert.present();
   }
 
@@ -409,35 +579,52 @@ export class HomePage {
         this.washing.waterLevel = _waterLevel;
         
 
-        console.log(this.washing)
+        console.log(this.washing);
 
         // check money
         this.msgService.washing(this.washing).subscribe(resp=>{
           //alert(resp.status)
           console.log(resp);
-          if(resp.status == '1') {
-              this.showAlert('ยืนยันการซักผ้า', `ค่าบริการ ${resp.price} บาท`, idWashing , idDorm, this.washing, data)
-          } else if(resp.status == '01') {
-              this.showAlertErr('ยอดเงินของคุณไม่เพียงพอ','กรุณาลองใหม่อีกครั้ง');
-          } else if(resp.status == '02') {
-            this.showAlertErr('ไม่พบผู้ใช้','กรุณาลองใหม่อีกครั้ง');
-          } else if(resp.status == '03') {
-            this.showAlertErr('ไม่สามารถทำรายการได้','กรุณาลองใหม่อีกครั้ง');
-          } else {
-            this.showAlertErr('เกิดข้อผิดพลาด','กรุณาลองใหม่อีกครั้ง');
-          }
+          this.storage.get('lang').then((data)=>{
+            if(data=='en'){
+              if(resp.status == '1') {
+                this.showAlert('Confirmation', `service charge ${resp.price} bath`, idWashing , idDorm, this.washing, data, resp.price);
+             } else if(resp.status == '01') {
+                this.showAlertErr('Please try again','Your balance is not enough.');
+             } else if(resp.status == '02') {
+               this.showAlertErr('Please try again','User not found.');
+             } else if(resp.status == '03') {
+                this.showAlertErr('Please try again','Can not make the transaction.');
+             } else {
+               this.showAlertErr('Please try again','Error.');
+             }
+            }else if(data=='th'){
+              if(resp.status == '1') {
+               this.showAlert('ยืนยันการซักผ้า', `ค่าบริการ ${resp.price} บาท`, idWashing , idDorm, this.washing, data, resp.price);
+             } else if(resp.status == '01') {
+               this.showAlertErr('ยอดเงินของคุณไม่เพียงพอ','กรุณาลองใหม่อีกครั้ง');
+             } else if(resp.status == '02') {
+               this.showAlertErr('ไม่พบผู้ใช้','กรุณาลองใหม่อีกครั้ง');
+             } else if(resp.status == '03') {
+               this.showAlertErr('ไม่สามารถทำรายการได้','กรุณาลองใหม่อีกครั้ง');
+             } else {
+               this.showAlertErr('เกิดข้อผิดพลาด','กรุณาลองใหม่อีกครั้ง');
+             }
+            }
+          });
+         
         });
       } 
      });
   }
 
-  showAlert(_title, _subTitle, WashingID, dormID, washing, data) {
+  showAlert(_title, _subTitle, WashingID, dormID, washing, data, price) {
     let alert = this.alertCtrl.create({
       title: _title,
       subTitle: _subTitle,
       buttons:[
         {
-          text: 'ตกลง',
+          text: 'OK',
           handler: () => {
             //this.presentLoadingCircles();
             console.log('OK clicked');
@@ -448,30 +635,66 @@ export class HomePage {
             this.msgService.washing(washing).subscribe(resp=>{
               //alert(resp.status)
               console.log(resp);
-              if(resp.status == '1') {
-                this.washingRef$ = this.afDatabase.object(`washingMachine/${dormID}/machine/${WashingID}`);
-                this.washingRef.washingStatus = 'washing';
-                this.washingRef$.update(this.washingRef);
-
-                setTimeout(() => {
-                  //this.startTimer(WashingID, dormID);
-                }, 3000)
+              this.storage.get('lang').then((data)=>{
+                if(data=='en'){
+                  if(resp.status == '1') {
+                    this.washingRef$ = this.afDatabase.object(`washingMachine/${dormID}/machine/${WashingID}`);
+                    this.washingRef.washingStatus = 'washing';
+                    this.washingRef.priceTotal = price;
+                    this.washingRef$.update(this.washingRef);
     
-                setTimeout(() => {
-                  this.startTimer(WashingID, dormID);
-                }, 1000)
-                this.getWashingList(data);
-                this.getProfile(data);
-                //this.ionViewDidLoad();
-              } else if(resp.status == '01') {
-                  this.showAlertErr('ยอดเงินของคุณไม่เพียงพอ','กรุณาลองใหม่อีกครั้ง');
-              } else if(resp.status == '02') {
-                this.showAlertErr('ไม่พบผู้ใช้','กรุณาลองใหม่อีกครั้ง');
-              } else if(resp.status == '03') {
-                this.showAlertErr('ไม่สามารถทำรายการได้','กรุณาลองใหม่อีกครั้ง');
-              } else {
-                this.showAlertErr('เครื่องซักผ้าถูกจองอยู่','กรุณารอคิวสักครู่');
-              }
+                    // --Timer--
+        
+                    // setTimeout(() => {
+                    //   this.startTimer(WashingID, dormID);
+                    // }, 1000);
+    
+                    this.onWashing(WashingID, dormID);
+    
+    
+                    this.getWashingList(data);
+                    this.getProfile(data);
+                    //this.ionViewDidLoad();
+                  } else if(resp.status == '01') {
+                      this.showAlertErr('Please try again','Your balance is not enough.');
+                  } else if(resp.status == '02') {
+                     this.showAlertErr('Please try again','User not found.');
+                  } else if(resp.status == '03') {
+                    this.showAlertErr('Please try again','Can not make the transaction.');
+                  } else {
+                      this.showAlertErr('Please wait a moment','The washing machine is booked.');
+                  }
+                }else if(data=='th'){
+                  if(resp.status == '1') {
+                    this.washingRef$ = this.afDatabase.object(`washingMachine/${dormID}/machine/${WashingID}`);
+                    this.washingRef.washingStatus = 'washing';
+                    this.washingRef.priceTotal = price;
+                    this.washingRef$.update(this.washingRef);
+    
+                    // --Timer--
+        
+                    // setTimeout(() => {
+                    //   this.startTimer(WashingID, dormID);
+                    // }, 1000);
+    
+                    this.onWashing(WashingID, dormID);
+    
+    
+                    this.getWashingList(data);
+                    this.getProfile(data);
+                    //this.ionViewDidLoad();
+                  } else if(resp.status == '01') {
+                     this.showAlertErr('ยอดเงินของคุณไม่เพียงพอ','กรุณาลองใหม่อีกครั้ง');
+                  } else if(resp.status == '02') {
+                     this.showAlertErr('ไม่พบผู้ใช้','กรุณาลองใหม่อีกครั้ง');
+                  } else if(resp.status == '03') {
+                    this.showAlertErr('ไม่สามารถทำรายการได้','กรุณาลองใหม่อีกครั้ง');
+                  } else {
+                    this.showAlertErr('เครื่องซักผ้าถูกจองอยู่','กรุณารอคิวสักครู่');
+                  }
+                }
+              });
+             
             });
             //this.navCtrl.push('HomePage');
           }
@@ -485,6 +708,22 @@ export class HomePage {
       ]
     });
     alert.present();
+  }
+
+  // new Timer (onWashing)
+  onWashing(WashingID, dormID) {
+    this.onWashingTimeLeft$ = this.afDatabase.object(`washingMachine/${dormID}/machine/${WashingID}`);
+    this.onWashingTimeLeft$.subscribe(data=>{
+      this.timeLeft = data.timeLeft;
+      this.onWashingStatus = data.washingStatus;
+      if(this.timeLeft =='00:00:00' && this.onWashingStatus=='free'){
+        console.log('if 1');
+      }
+      else if(this.timeLeft =='00:05:00' && this.onWashingStatus=='washing'){
+        console.log('เหลือเวลาอีก 5 นาที');
+      }
+  });
+    
   }
 
   // จอง  
@@ -505,28 +744,54 @@ export class HomePage {
       dorm_name = this.dorm4_name;
       dorm_id = this.dorm4_id;
     }
- 
-    let actionSheet = this.actionSheetCtrl.create({
-      title: 'เมนู',
-      cssClass: 'action-sheets-basic-page',
-      buttons: [
-        {
-          text: `จองเครื่อง ${name}, ${dorm_name}`,
-          handler: () => {
-            this.showBooking(`ต้องการจองคิวหรือไม่`,`เครื่อง ${name}, ${dorm_name}`, washingkey);
-            console.log('ok');
-          }
-        },
-        {
-          text: 'ยกเลิก',
-          role: 'cancel', // will always sort to be on the bottom
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
+    
+    this.storage.get('lang').then((data)=>{
+      if(data=='en'){
+        let actionSheet = this.actionSheetCtrl.create({
+          title: 'Menu',
+          cssClass: 'action-sheets-basic-page',
+          buttons: [
+            {
+              text: `Booking ${name}, ${dorm_name}`,
+              handler: () => {
+                console.log('ok');
+                  this.showBooking(`Booking Confirmation`,`Machine ${name}, ${dorm_name}`, washingkey);
+              }
+            },
+            {
+              text: 'Cancel',
+              role: 'cancel', // will always sort to be on the bottom
+              handler: () => {
+                console.log('Cancel clicked');
+              }
+            }
+          ]
+        });
+        actionSheet.present();
+      }else if(data=='th'){
+        let actionSheet = this.actionSheetCtrl.create({
+          title: 'Menu',
+          cssClass: 'action-sheets-basic-page',
+          buttons: [
+            {
+              text: `จองเครื่อง ${name}, ${dorm_name}`,
+              handler: () => {
+               this.showBooking(`ต้องการจองคิวหรือไม่`,`เครื่อง ${name}, ${dorm_name}`, washingkey);
+                console.log('ok');
+              }
+            },
+            {
+              text: 'ยกเลิก',
+              role: 'cancel', // will always sort to be on the bottom
+              handler: () => {
+                console.log('Cancel clicked');
+              }
+            }
+          ]
+        });
+        actionSheet.present();
+      }
     });
-    actionSheet.present();
   }
 
   showBooking(_title, _subTitle, _washingkey) {
@@ -535,7 +800,7 @@ export class HomePage {
       subTitle: _subTitle,
       buttons: [
         {
-          text: 'ตกลง',
+          text: 'OK',
           handler: () => {
             this.afAuth.authState.take(1).subscribe(data => {
               if(data && data.email && data.uid) {
@@ -544,14 +809,27 @@ export class HomePage {
                 this.booking.idWashing = _washingkey;
 
                 this.msgService.bookingQueue(this.booking).subscribe(resp=>{
-                  if(resp.status == '1') {
-                      this.showAlertErr('จองคิวสำเร็จ','');
-                      this.getQueueList(data);
-                  } else if(resp.status == '01') {
-                    this.showAlertErr('ไม่สามารถจองคิวได้','เนื่องจากมีผู้ใช้จองคิวเครื่องซักผ้าเครื่องนี้แล้ว');
-                  } else {
-                    this.showAlertErr('ไม่สามารถทำรายการได้','กรุณาลองใหม่อีกครั้ง');
-                  }
+                  this.storage.get('lang').then((data)=>{
+                    if(data=='en'){
+                      if(resp.status == '1') {
+                          this.showAlertErr('Booking success','');
+                         this.getQueueList(data); 
+                     } else if(resp.status == '01') {
+                      this.showAlertErr('Booking failed','Another user has booked this washing machine.');
+                     } else {
+                        this.showAlertErr('Please try again','Can not make transaction.');
+                     }
+                    }else if(data=='th'){
+                      if(resp.status == '1') {
+                        this.showAlertErr('จองคิวสำเร็จ','');
+                         this.getQueueList(data); 
+                     } else if(resp.status == '01') {
+                        this.showAlertErr('ไม่สามารถจองคิวได้','เนื่องจากมีผู้ใช้จองคิวเครื่องซักผ้าเครื่องนี้แล้ว');
+                     } else {
+                        this.showAlertErr('ไม่สามารถทำรายการได้','กรุณาลองใหม่อีกครั้ง');
+                     }
+                    }
+                  });
                 });
               } 
           });
@@ -650,23 +928,39 @@ export class HomePage {
               });
           }
           // Notification
-          if (this.timer.secondsRemaining == 60) {
-
-            this.localNotifications.schedule({
-              text: 'เหลือเวลาอีก 1 นาทีผ้าจะซักเสร็จ',
-              at: new Date(new Date().getTime()),
-              led: 'FF0000',
+          if (this.timer.secondsRemaining == 300) {
+            this.storage.get('lang').then((data)=>{
+              if(data=='en'){
+                  this.localNotifications.schedule({
+                    text: 'Another minute the washing is finished.',
+                    at: new Date(new Date().getTime()),
+                    led: 'FF0000',
+                  });
+              }else if(data=='th'){
+                  this.localNotifications.schedule({
+                    text: 'เหลือเวลาอีก 5 นาทีผ้าจะซักเสร็จ',
+                    at: new Date(new Date().getTime()),
+                    led: 'FF0000',
+                  });
+              }
             });
-            
           } else if (this.timer.secondsRemaining == 0) {
-            
-            this.localNotifications.schedule({
-              text: 'ผ้าซักเสร็จแล้ว',
-              at: new Date(new Date().getTime()), //at: new Date(new Date().getTime()+6000),
-              led: 'FF0000',
+            this.storage.get('lang').then((data)=>{
+              if(data=='en'){
+                this.localNotifications.schedule({
+                  text: 'Washing done.',
+                 at: new Date(new Date().getTime()), //at: new Date(new Date().getTime()+6000),
+                 led: 'FF0000',
+               });
+              }else if(data=='th'){
+                this.localNotifications.schedule({
+                  text: 'ผ้าซักเสร็จแล้ว',
+                 at: new Date(new Date().getTime()), //at: new Date(new Date().getTime()+6000),
+                 led: 'FF0000',
+               });
+              }
             });
           }
-
       }, 1000);
   }
 
@@ -709,7 +1003,7 @@ export class HomePage {
   presentLoadingCircles() {
     let loading = this.loadingCtrl.create({
       spinner: 'circles',
-      content: 'กรุณารอสักครู่',
+      content: 'Please wait',
       duration: 1000
     });
 
