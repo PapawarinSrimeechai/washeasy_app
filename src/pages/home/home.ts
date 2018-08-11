@@ -1,3 +1,4 @@
+import { PointAccumulationPage } from './../point-accumulation/point-accumulation';
 import { Component, ViewChild  } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, MenuController, App ,AlertController,
   ActionSheetController,LoadingController} from 'ionic-angular';
@@ -148,7 +149,7 @@ export class HomePage {
 
     console.log('ionViewDidLoad HomePage');
 
-   this.afAuth.authState.take(1).subscribe(data => {
+    this.afAuth.authState.take(1).subscribe(data => {
     if(data && data.email && data.uid) {
       //this.profileData = this.afDatabase.object(`profile/${data.uid}`);
       this.onNotification(data);
@@ -165,6 +166,10 @@ export class HomePage {
 
   notificationPage(){
     this.navCtrl.setRoot('NotificationPage');
+  }
+
+  pointAccumulationPage(){
+    this.navCtrl.setRoot('PointAccumulationPage');
   }
 
   async getNotification(data){

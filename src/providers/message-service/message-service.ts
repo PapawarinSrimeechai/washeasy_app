@@ -313,6 +313,49 @@ export class MessageServiceProvider {
       .catch(this.catchError);
 
     }
+
+    updatePointProfile(data) {
+
+      let headers = new Headers();
+      headers.append('Accept', 'application/json');
+      headers.append('Content-Type', 'applicayion/json');
+      headers.append('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT');
+      headers.append('Access-Control-Allow-Origin','https://washeasy.me/api/*'); 
+
+      return this.http.post(this.url+"/updatePoint", JSON.stringify(data), {headers: headers})
+      .do(this.logResponse)
+      .map(this.extractData)
+      .catch(this.catchError);
+    }
     
+    addCoupon(data){
+
+      let headers = new Headers();
+      headers.append('Accept', 'application/json');
+      headers.append('Content-Type', 'applicayion/json');
+      headers.append('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT');
+      headers.append('Access-Control-Allow-Origin','https://washeasy.me/api/*'); 
+
+      return this.http.post(this.url+"/addCoupon", JSON.stringify(data), {headers: headers})
+      .do(this.logResponse)
+      .map(this.extractData)
+      .catch(this.catchError);
+
+    }
+
+    getCoupon(data){
+
+      let headers = new Headers();
+      headers.append('Accept', 'application/json');
+      headers.append('Content-Type', 'applicayion/json');
+      headers.append('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT');
+      headers.append('Access-Control-Allow-Origin','https://washeasy.me/api/*'); 
+
+      return this.http.post(this.url+"/getCoupon", JSON.stringify(data), {headers: headers})
+      .do(this.logResponse)
+      .map(this.extractData)
+      .catch(this.catchError);
+
+    }
 
 }

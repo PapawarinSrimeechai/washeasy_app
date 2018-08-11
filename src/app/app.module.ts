@@ -1,3 +1,4 @@
+
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -6,6 +7,8 @@ import { MyApp } from './app.component';
 import { TopUpPage } from '../pages/top-up/top-up';
 import { HistoryPage } from '../pages/history/history';
 import { ProfileEditPage } from '../pages/profile-edit/profile-edit';
+import { PointAccumulationPage } from './../pages/point-accumulation/point-accumulation';
+import { CouponPage } from './../pages/coupon/coupon';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -40,6 +43,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     TopUpPage,
     ProfileEditPage,
     HistoryPage,
+    PointAccumulationPage,
+    CouponPage
   ],
   imports: [
     BrowserModule,
@@ -63,7 +68,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     MyApp,
     TopUpPage,
     ProfileEditPage,
-    HistoryPage
+    HistoryPage,
+    PointAccumulationPage,
+    CouponPage
   ],
   providers: [
     StatusBar,

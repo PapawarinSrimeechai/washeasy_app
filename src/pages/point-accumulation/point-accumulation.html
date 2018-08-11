@@ -1,0 +1,32 @@
+<!--
+  Generated template for the PointAccumulationPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar hideBackButton="true" color="primary">
+    <ion-buttons left>
+      <button ion-button icon-only (click)="homePage()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>Point Accumulation</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <div class="center">
+    <ion-img style="width: 80px; height: 80px;" class="star" src="assets/imgs/star.png" ></ion-img><br>
+    <h2>{{'uipoint'|translate}} {{profileData.uPoint}} {{'uipoint2'|translate}}</h2><br>
+  </div>
+  <br>
+  <button ion-button block class = "detergent" [disabled]="!detergent" (click)="getDetergent()" >  {{'detergent'|translate}} </button><br>
+  <button ion-button block class = "softener" [disabled]="!softener" (click)="getSoftener()" >  {{'softener'|translate}} </button><br>
+  <button ion-button block class = "wash" [disabled]="!wash" (click)="getWash()" >  {{'wash'|translate}} </button><br>
+  <button ion-button block class = "dry" [disabled]="!dry" (click)="getDry()">  {{'dry'|translate}} </button>
+
+  
+</ion-content>

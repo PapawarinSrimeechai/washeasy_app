@@ -1,3 +1,4 @@
+
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform, LoadingController, AlertController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -8,12 +9,14 @@ import { HomePage } from '../pages/home/home';
 import { TopUpPage } from '../pages/top-up/top-up';
 import { ProfileEditPage } from '../pages/profile-edit/profile-edit';
 import { HistoryPage } from '../pages/history/history';
+import { PointAccumulationPage } from './../pages/point-accumulation/point-accumulation';
 import { FCM } from '@ionic-native/fcm';
 import { Geolocation } from '@ionic-native/geolocation';
 import { AngularFireDatabase, FirebaseObjectObservable, FirebaseListObservable} from "angularfire2/database";
 import { MessageServiceProvider } from '../providers/message-service/message-service';
 import { TranslateService } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
+import { CouponPage } from '../pages/coupon/coupon';
 
 @Component({
   selector: 'app-page',
@@ -83,6 +86,8 @@ export class MyApp {
       { title: 'Top Up',  icon: 'ios-card' , component: TopUpPage},
       { title: 'History', icon: 'ios-list-box' , component: HistoryPage },
       { title: 'Profile',  icon: 'ios-contact' , component: ProfileEditPage },
+      { title: 'Point', icon: 'ios-star', component: PointAccumulationPage},
+      { title: 'Coupon', icon: 'ios-pricetags', component: CouponPage}
      //{ title: 'List', component: ListPage }
     ];
 
