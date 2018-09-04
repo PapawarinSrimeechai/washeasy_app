@@ -83,28 +83,28 @@ export class LoginPage {
       console.log(result);
         if(result.emailVerified==true) {
             // crerate token section
-          this.fcm.getToken().then(token=>{
-            this.afAuth.authState.take(1).subscribe(data => {
-              this.token.token = data.uid;
-              this.token.fcmToken = token;
-              this.msgService.updateFcmToken(this.token).subscribe(resp=> {
-              console.log(resp)
-                if (resp.status=='0') {
-                  this.storage.get('lang').then((value)=>{
-                    if(value=='en'){
-                      this.showAlert('Please try again','Email or password is incorrect.');
-                    }else if(value=='th'){
-                      this.showAlert('ไม่สามารถทำรายการได้','กรุณาลองใหม่อีกครั้ง');
-                    }
-                  });
-                }else{
-                  this.navCtrl.setRoot('HomePage');
-                }
-              });
-            });
-          });
+          // this.fcm.getToken().then(token=>{
+          //   this.afAuth.authState.take(1).subscribe(data => {
+          //     this.token.token = data.uid;
+          //     this.token.fcmToken = token;
+          //     this.msgService.updateFcmToken(this.token).subscribe(resp=> {
+          //     console.log(resp)
+          //       if (resp.status=='0') {
+          //         this.storage.get('lang').then((value)=>{
+          //           if(value=='en'){
+          //             this.showAlert('Please try again','Email or password is incorrect.');
+          //           }else if(value=='th'){
+          //             this.showAlert('ไม่สามารถทำรายการได้','กรุณาลองใหม่อีกครั้ง');
+          //           }
+          //         });
+          //       }else{
+          //         this.navCtrl.setRoot('HomePage');
+          //       }
+          //     });
+          //   });
+          // });
           
-       // this.navCtrl.setRoot('HomePage');
+        this.navCtrl.setRoot('HomePage');
         
         } else { //logout
           this.storage.get('lang').then((data)=>{

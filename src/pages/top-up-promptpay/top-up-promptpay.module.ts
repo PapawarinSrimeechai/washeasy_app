@@ -11,7 +11,7 @@ import { AndroidPermissions} from '@ionic-native/android-permissions';
     IonicPageModule.forChild(TopUpPromptpayPage),
   ],
   providers: [
-    AndroidPermissions
+    AndroidPermissions,
   ],
 })
 export class TopUpPromptpayPageModule {}

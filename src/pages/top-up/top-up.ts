@@ -41,10 +41,12 @@ export class TopUpPage {
       this.translate.setTranslation('en', {
         card: 'By card',
         coin: 'By coin machine',
+        Omise: 'By credit/debit card'
       });
       this.translate.setTranslation('th', {
         card: 'เติมเงินผ่านบัตร',
         coin: 'เติมเงินผ่านกล่องหยอดเหรียญ',
+        Omise: 'เติมเงินผ่านบัตร credit/debit '
        });
   }
   
@@ -56,7 +58,9 @@ export class TopUpPage {
     this.navCtrl.push('TopUpMachinePage');
   }
 
-  
+  topUpOmise(){
+    this.navCtrl.push('TopUpPromptpayPage')
+  }
   presentLoadingCircles() {
     let loading = this.loadingCtrl.create({
       spinner: 'circles',
